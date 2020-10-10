@@ -44,7 +44,7 @@ public class Programa {
 		String opcion;
 		List<Personaje> personajes = new ArrayList<>();
 		personajes = desSerializarPersonajes("personajes.dat");
-		
+
 		do {
 			MostrarMenu();
 			opcion = sc.nextLine();
@@ -75,9 +75,8 @@ public class Programa {
 				System.out.println();
 				Personaje p;
 				try {
-					p = anyadirPersonaje("https://swapi.dev/api/people/" 
-							+ codigoPersonaje + "/?format=json");	
-					
+					p = anyadirPersonaje("https://swapi.dev/api/people/" + codigoPersonaje + "/?format=json");
+
 					if (!personajes.contains(p)) {
 						personajes.add(p);
 						System.out.println("Personaje añadido correctamente.");
@@ -99,7 +98,7 @@ public class Programa {
 				System.out.print("Introduce el código de un personaje: ");
 				codigoPersonaje = sc.nextLine();
 				System.out.println();
-				
+
 				try {
 					obtenerEspecies(codigoPersonaje);
 				} catch (Exception e) {
@@ -262,12 +261,38 @@ public class Programa {
 			// System.out.println("Error al serializar personajes");
 		}
 	}
-	
+
 	// - 4. VER ESPECIE DE PERSONAJE
 	// ----------------------------------------------------------------------------------------------
 
 	private static void obtenerEspecies(String codigoPersonaje) {
-		//TO DO
+		try {
+			List<String> nombreDeEspecies = new ArrayList<>();
+			String json = leerUrl("https://swapi.dev/api/people/" + codigoPersonaje + "/?format=json");
+
+			Gson gson = new Gson();
+			Personaje personaje = gson.fromJson(json, Personaje.class);
+			Especie especie;
+
+			if (!personaje.species.isEmpty()) {
+				for (int i = 0; i < personaje.species.size(); i++) {
+//					System.out.println(personaje.species.get(i) + "?format=json");
+					String newJson = leerUrl(personaje.species.get(i) + "?format=json");
+					Gson newGson = new Gson();
+					especie = newGson.fromJson(newJson, Especie.class);
+
+				}
+			} else {
+				System.out.println("No hay ninguna especie registrada");
+			}
+
+//			System.out.println("----- PRUEBA -----");
+//			System.out.println(personaje.species);
+//			System.out.println();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	// - DESERIALIZAR PERSONAJES
